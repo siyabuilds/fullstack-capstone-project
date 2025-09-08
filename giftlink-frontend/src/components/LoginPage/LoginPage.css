@@ -1,0 +1,227 @@
+/* LoginPage.css */
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  font-family: 'Arial', sans-serif;
+}
+
+.login-form {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  animation: slideIn 0.6s ease-out;
+  position: relative;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e1e1e1;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #74b9ff;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(116, 185, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.form-input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.login-button {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 10px;
+}
+
+.login-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(116, 185, 255, 0.4);
+  background: linear-gradient(135deg, #5ba2f5 0%, #0770d1 100%);
+}
+
+.login-button:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(116, 185, 255, 0.4);
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.forgot-password {
+  color: #74b9ff;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+  color: #0984e3;
+  text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 10px;
+  }
+  
+  .login-form {
+    padding: 30px 20px;
+    margin: 20px 10px;
+  }
+  
+  .login-title {
+    font-size: 24px;
+  }
+  
+  .form-input {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .login-button {
+    padding: 12px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-form {
+    padding: 25px 15px;
+  }
+  
+  .login-title {
+    font-size: 22px;
+    margin-bottom: 25px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-label {
+    font-size: 13px;
+  }
+}
+
+/* Additional styling for better UX */
+.form-input:valid {
+  border-color: #00b894;
+}
+
+.form-input:invalid:not(:placeholder-shown) {
+  border-color: #e17055;
+}
+
+.login-form::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #74b9ff, #0984e3);
+  border-radius: 17px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.login-form:hover::before {
+  opacity: 0.1;
+}
+
+/* Loading animation for button (optional) */
+.login-button.loading {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.login-button.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: auto;
+  border: 2px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Focus accessibility */
+.form-input:focus,
+.login-button:focus,
+.forgot-password:focus {
+  outline: 2px solid #74b9ff;
+  outline-offset: 2px;
+}
