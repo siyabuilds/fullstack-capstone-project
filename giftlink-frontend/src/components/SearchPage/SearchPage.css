@@ -1,26 +1,525 @@
 /* Task 1: Style the search input field */
 .search-input {
-    /* Insert specific CSS properties here */
+    border: 2px solid #e9ecef;
+    border-radius: 8px 0 0 8px;
+    padding: 12px 16px;
+    font-size: 16px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    background-color: #fff;
+    width: 100%;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #9ca3af;
+    font-style: italic;
 }
 
 /* Task 2: Style the search button */
 .search-button {
-    /* Insert specific CSS properties here */
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 24px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.15s ease-in-out;
+    font-size: 16px;
+    min-width: 120px;
+}
+
+.search-button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+    color: white;
+}
+
+.search-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.search-button:active {
+    transform: translateY(0);
 }
 
 /* Task 3: Customize dropdown filters */
 .dropdown-filter {
-    /* Insert specific CSS properties here */
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px 15px;
+    background-color: #fff;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    font-size: 14px;
+    color: #495057;
+    width: 100%;
+    cursor: pointer;
+}
+
+.dropdown-filter:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.dropdown-filter:hover {
+    border-color: #007bff;
 }
 
 /* Task 4: Style the age range slider */
+.age-range-container {
+    padding: 10px 0;
+}
+
 .age-range-slider {
-    /* Insert specific CSS properties here */
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #007bff 0%, #007bff var(--value), #e9ecef var(--value), #e9ecef 100%);
+    outline: none;
+    transition: background 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.age-range-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s ease-in-out;
+}
+
+.age-range-slider::-webkit-slider-thumb:hover {
+    background: #0056b3;
+    transform: scale(1.1);
+}
+
+.age-range-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.age-range-value {
+    text-align: center;
+    font-weight: 600;
+    color: #007bff;
+    margin-top: 8px;
+    font-size: 16px;
 }
 
 /* Task 5: Enhance search results cards appearance */
 .search-results-card {
-    /* Insert specific CSS properties here */
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+    overflow: hidden;
+    background: #fff;
+    height: 100%;
 }
 
-/* Additional placeholders for tasks 6 to 10 */
+/* Task 7: Apply hover effect to search results cards */
+.search-results-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border: 1px solid #007bff;
+}
+
+.search-results-card .card-img-container {
+    height: 200px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Task 8: Ensure images in search results are displayed appropriately */
+.search-results-card .card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.15s ease-in-out;
+}
+
+.search-results-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.no-image-placeholder {
+    color: #6c757d;
+    font-size: 14px;
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+}
+
+.search-results-card .card-body {
+    padding: 16px;
+}
+
+.search-results-card .card-title {
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 8px;
+    font-size: 16px;
+    line-height: 1.3;
+}
+
+.search-results-card .card-text {
+    color: #6c757d;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.search-results-card .card-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    padding: 12px 16px;
+}
+
+.search-results-card .gift-condition {
+    display: inline-block;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.search-results-card .gift-age {
+    color: #6c757d;
+    font-size: 12px;
+    float: right;
+}
+
+/* Task 6: Style the "No products found" alert message */
+.no-products-alert {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 2px dashed #6c757d;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 40px 0;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.no-products-alert i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+    color: #adb5bd;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Filter section styling */
+.filter-section {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.filter-section h5 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.filter-group {
+    margin-bottom: 20px;
+}
+
+.filter-group label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Search section styling */
+.search-section {
+    margin-bottom: 30px;
+}
+
+.search-section .input-group {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Search results header */
+.search-results h5 {
+    color: #495057;
+    font-weight: 600;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+/* Task 9: Create responsive layout for search results */
+.search-results-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+@media (max-width: 768px) {
+    .search-results-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .filter-section {
+        margin-bottom: 15px;
+    }
+    
+    .search-section .input-group {
+        flex-direction: column;
+    }
+    
+    .search-input {
+        border-radius: 8px 8px 0 0;
+        margin-bottom: -1px;
+    }
+    
+    .search-button {
+        border-radius: 0 0 8px 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .filter-section {
+        padding: 15px;
+    }
+    
+    .search-results-card .card-img-container {
+        height: 150px;
+    }
+    
+    .filter-group {
+        margin-bottom: 15px;
+    }
+}
+
+/* Task 10: Overall page styling for cohesive design */
+.search-page-container {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+.search-page-content {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    margin: 0 auto;
+}
+
+.page-title {
+    text-align: center;
+    color: #343a40;
+    font-weight: 700;
+    margin-bottom: 30px;
+    font-size: 28px;
+    position: relative;
+}
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-radius: 2px;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+.search-stats {
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 15px;
+    text-align: right;
+}
+
+/* Animation for search results */
+.search-results-container .search-results-card {
+    animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom scrollbar for better aesthetics */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
+}
+
+/* Additional accessibility and UI enhancements */
+.search-input:focus,
+.dropdown-filter:focus,
+.age-range-slider:focus {
+    outline: none;
+}
+
+.search-button:focus {
+    outline: 2px solid #80bdff;
+    outline-offset: 2px;
+}
+
+/* Enhanced loading animation */
+.loading-spinner .spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Improved touch targets for mobile */
+@media (max-width: 768px) {
+    .search-button,
+    .dropdown-filter {
+        min-height: 48px;
+    }
+    
+    .age-range-slider::-webkit-slider-thumb {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .search-results-card {
+        margin-bottom: 15px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .search-page-container {
+        background: white;
+    }
+    
+    .search-section,
+    .filter-section {
+        display: none;
+    }
+    
+    .search-results-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .search-results-card {
+        border: 2px solid #000;
+    }
+    
+    .search-button {
+        background: #000;
+        color: #fff;
+    }
+    
+    .dropdown-filter,
+    .search-input {
+        border: 2px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .search-results-card,
+    .search-button,
+    .age-range-slider,
+    .dropdown-filter,
+    .search-input {
+        transition: none;
+    }
+    
+    .search-results-container .search-results-card {
+        animation: none;
+    }
+    
+    @keyframes slideInUp {
+        from, to {
+            transform: none;
+            opacity: 1;
+        }
+    }
+    
+    @keyframes fadeIn {
+        from, to {
+            transform: none;
+            opacity: 1;
+        }
+    }
+}
