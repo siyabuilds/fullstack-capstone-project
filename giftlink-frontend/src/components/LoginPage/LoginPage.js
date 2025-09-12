@@ -12,7 +12,7 @@ const LoginPage = () => {
 
   // Local variables from context and navigation
   const navigate = useNavigate();
-  const { isLoggedIn, setIsLoggedIn, setUserName } = useAppContext();
+  const { setIsLoggedIn, setUserName } = useAppContext();
   const bearerToken = sessionStorage.getItem("bearer-token");
 
   // Check if user is already logged in
@@ -114,9 +114,16 @@ const LoginPage = () => {
         </button>
 
         <div className="form-footer">
-          <a href="#" className="forgot-password">
+          <button
+            type="button"
+            className="forgot-password"
+            onClick={() => {
+              // TODO: Implement forgot password functionality
+              alert("Forgot password functionality not yet implemented");
+            }}
+          >
             Forgot your password?
-          </a>
+          </button>
         </div>
       </div>
     </div>
