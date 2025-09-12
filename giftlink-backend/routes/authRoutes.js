@@ -203,10 +203,21 @@ router.put(
   "/update",
   [
     // Validation middleware
-    body("firstName").optional().trim().notEmpty().withMessage("First name cannot be empty"),
-    body("lastName").optional().trim().notEmpty().withMessage("Last name cannot be empty"),
+    body("firstName")
+      .optional()
+      .trim()
+      .notEmpty()
+      .withMessage("First name cannot be empty"),
+    body("lastName")
+      .optional()
+      .trim()
+      .notEmpty()
+      .withMessage("Last name cannot be empty"),
     body("email").optional().isEmail().withMessage("Valid email is required"),
-    body("password").optional().isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
+    body("password")
+      .optional()
+      .isLength({ min: 6 })
+      .withMessage("Password must be at least 6 characters long"),
   ],
   async (req, res) => {
     try {
@@ -222,7 +233,7 @@ router.put(
 
       // Check if email is present in the header and throw appropriate error message if not present
       const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
         logger.warn("Profile update attempt without authorization header");
         return res.status(401).json({
           error: "Authorization header with Bearer token is required",
@@ -279,7 +290,7 @@ router.put(
         // Check if new email already exists
         const existingUser = await collection.findOne({
           email: email.toLowerCase().trim(),
-          _id: { $ne: userObjectId }
+          _id: { $ne: userObjectId },
         });
         if (existingUser) {
           logger.warn(`Profile update attempt with existing email: ${email}`);
