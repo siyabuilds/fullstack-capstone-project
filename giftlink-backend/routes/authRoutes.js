@@ -110,4 +110,91 @@ router.post(
   }
 );
 
+// User login endpoint
+router.post(
+  "/login",
+  [
+    // Validation middleware
+    body("email").isEmail().withMessage("Valid email is required"),
+    body("password").notEmpty().withMessage("Password is required"),
+  ],
+  async (req, res) => {
+    try {
+      // Check for validation errors
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        logger.error("Validation errors in login:", errors.array());
+        return res.status(400).json({
+          error: "Validation failed",
+          details: errors.array(),
+        });
+      }
+
+      const { email, password } = req.body;
+
+      // Connect to giftsdb in MongoDB through connectToDatabase
+      const db = await connectToDatabase();
+
+      // Access MongoDB users collection
+      const collection = db.collection("users");
+
+      // Check for user credentials in database
+      const user = await collection.findOne({
+        email: email.toLowerCase().trim(),
+      });
+
+      // Send appropriate message if user not found
+      if (!user) {
+        logger.warn(`Login attempt with non-existent email: ${email}`);
+        return res.status(401).json({
+          error: "Invalid email or password",
+        });
+      }
+
+      // Check if the user entered password matches the stored encrypted password
+      const isPasswordValid = await bcryptjs.compare(password, user.password);
+
+      // Send appropriate message on password mismatch
+      if (!isPasswordValid) {
+        logger.warn(`Login attempt with invalid password for email: ${email}`);
+        return res.status(401).json({
+          error: "Invalid email or password",
+        });
+      }
+
+      // Create JWT authentication if passwords match with user._id as payload
+      const payload = {
+        userId: user._id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      };
+
+      const token = jwt.sign(payload, JWT_SECRET, {
+        expiresIn: "24h",
+      });
+
+      logger.info(`User logged in successfully: ${email}`);
+
+      // Fetch user details from database and send response (don't send password)
+      res.status(200).json({
+        message: "Login successful",
+        user: {
+          id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          createdAt: user.createdAt,
+        },
+        token: token,
+      });
+    } catch (error) {
+      logger.error("Error in user login:", error);
+      res.status(500).json({
+        error: "Internal server error during login",
+      });
+    }
+  }
+);
+
 module.exports = router;
