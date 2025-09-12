@@ -3,6 +3,7 @@ const router = express.Router();
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
+const { ObjectId } = require("mongodb");
 const connectToDatabase = require("../models/db");
 const logger = require("../logger");
 require("dotenv").config();
@@ -192,6 +193,154 @@ router.post(
       logger.error("Error in user login:", error);
       res.status(500).json({
         error: "Internal server error during login",
+      });
+    }
+  }
+);
+
+// User profile update endpoint
+router.put(
+  "/update",
+  [
+    // Validation middleware
+    body("firstName").optional().trim().notEmpty().withMessage("First name cannot be empty"),
+    body("lastName").optional().trim().notEmpty().withMessage("Last name cannot be empty"),
+    body("email").optional().isEmail().withMessage("Valid email is required"),
+    body("password").optional().isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
+  ],
+  async (req, res) => {
+    try {
+      // Validate the input using validationResult and return appropriate message if there is an error
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        logger.error("Validation errors in profile update:", errors.array());
+        return res.status(400).json({
+          error: "Validation failed",
+          details: errors.array(),
+        });
+      }
+
+      // Check if email is present in the header and throw appropriate error message if not present
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        logger.warn("Profile update attempt without authorization header");
+        return res.status(401).json({
+          error: "Authorization header with Bearer token is required",
+        });
+      }
+
+      const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+      let decoded;
+      try {
+        decoded = jwt.verify(token, JWT_SECRET);
+      } catch (err) {
+        logger.warn("Profile update attempt with invalid token");
+        return res.status(401).json({
+          error: "Invalid or expired token",
+        });
+      }
+
+      const userId = decoded.userId;
+      const { firstName, lastName, email, password } = req.body;
+
+      // Convert userId to ObjectId for MongoDB operations
+      let userObjectId;
+      try {
+        userObjectId = new ObjectId(userId);
+      } catch (err) {
+        logger.warn("Profile update attempt with invalid user ID format");
+        return res.status(400).json({
+          error: "Invalid user ID format",
+        });
+      }
+
+      // Connect to giftsdb in MongoDB through connectToDatabase in db.js and access users collection
+      const db = await connectToDatabase();
+      const collection = db.collection("users");
+
+      // Find user credentials in database
+      const user = await collection.findOne({ _id: userObjectId });
+      if (!user) {
+        logger.warn(`Profile update attempt for non-existent user: ${userId}`);
+        return res.status(404).json({
+          error: "User not found",
+        });
+      }
+
+      // Prepare update object
+      const updateData = {
+        updatedAt: new Date(),
+      };
+
+      // Add fields to update if provided
+      if (firstName) updateData.firstName = firstName.trim();
+      if (lastName) updateData.lastName = lastName.trim();
+      if (email) {
+        // Check if new email already exists
+        const existingUser = await collection.findOne({
+          email: email.toLowerCase().trim(),
+          _id: { $ne: userObjectId }
+        });
+        if (existingUser) {
+          logger.warn(`Profile update attempt with existing email: ${email}`);
+          return res.status(400).json({
+            error: "Email already exists",
+          });
+        }
+        updateData.email = email.toLowerCase().trim();
+      }
+      if (password) {
+        // Hash the new password
+        const saltRounds = 10;
+        updateData.password = await bcryptjs.hash(password, saltRounds);
+      }
+
+      // Update user credentials in database
+      const result = await collection.updateOne(
+        { _id: userObjectId },
+        { $set: updateData }
+      );
+
+      if (!result.acknowledged) {
+        logger.error("Failed to update user profile in database");
+        return res.status(500).json({
+          error: "Failed to update user profile",
+        });
+      }
+
+      // Get updated user data
+      const updatedUser = await collection.findOne({ _id: userObjectId });
+
+      // Create JWT authentication with user._id as payload using secret key from .env file
+      const payload = {
+        userId: updatedUser._id,
+        email: updatedUser.email,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+      };
+
+      const newToken = jwt.sign(payload, JWT_SECRET, {
+        expiresIn: "24h",
+      });
+
+      logger.info(`User profile updated successfully: ${updatedUser.email}`);
+
+      // Return success response (don't send password)
+      res.status(200).json({
+        message: "Profile updated successfully",
+        user: {
+          id: updatedUser._id,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          email: updatedUser.email,
+          updatedAt: updatedUser.updatedAt,
+        },
+        token: newToken,
+      });
+    } catch (error) {
+      logger.error("Error in profile update:", error);
+      res.status(500).json({
+        error: "Internal server error during profile update",
       });
     }
   }
