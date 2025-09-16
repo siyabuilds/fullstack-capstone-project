@@ -21,18 +21,21 @@ const RegisterPage = () => {
     try {
       setErrorMessage(""); // Clear any previous error messages
 
-      const response = await fetch(`${urlConfig.backendUrl}/app/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          password,
-        }),
-      });
+      const response = await fetch(
+        `${urlConfig.backendUrl}/api/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            password,
+          }),
+        }
+      );
 
       if (response.ok) {
         // Access data in JSON format from the backend
@@ -40,19 +43,11 @@ const RegisterPage = () => {
         console.log("Registration successful:", data);
 
         // Store user details in session storage
-        sessionStorage.setItem(
-          "user",
-          JSON.stringify({
-            id: data.id,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-          })
-        );
-        sessionStorage.setItem("authToken", data.authToken || data.token);
+        sessionStorage.setItem("bearer-token", data.token);
+        sessionStorage.setItem("user-details", JSON.stringify(data.user));
 
         // Set user details in context state
-        setUserName(`${data.firstName} ${data.lastName}`);
+        setUserName(`${data.user.firstName} ${data.user.lastName}`);
 
         // Set user as logged in using useAppContext
         setIsLoggedIn(true);

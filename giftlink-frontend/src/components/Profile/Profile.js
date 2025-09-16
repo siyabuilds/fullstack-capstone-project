@@ -13,7 +13,7 @@ const Profile = () => {
   const [editMode, setEditMode] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    const authtoken = sessionStorage.getItem("auth-token");
+    const authtoken = sessionStorage.getItem("bearer-token");
     if (!authtoken) {
       navigate("/app/login");
     } else {
@@ -23,17 +23,17 @@ const Profile = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const authtoken = sessionStorage.getItem("auth-token");
-      const email = sessionStorage.getItem("email");
-      const name = sessionStorage.getItem("name");
-      if (name || authtoken) {
-        const storedUserDetails = {
-          name: name,
-          email: email,
+      const authtoken = sessionStorage.getItem("bearer-token");
+      const userDetails = sessionStorage.getItem("user-details");
+      if (userDetails && authtoken) {
+        const storedUserDetails = JSON.parse(userDetails);
+        const userProfileData = {
+          name: `${storedUserDetails.firstName} ${storedUserDetails.lastName}`,
+          email: storedUserDetails.email,
         };
 
-        setUserDetails(storedUserDetails);
-        setUpdatedDetails(storedUserDetails);
+        setUserDetails(userProfileData);
+        setUpdatedDetails(userProfileData);
       }
     } catch (error) {
       console.error(error);
@@ -55,15 +55,23 @@ const Profile = () => {
     e.preventDefault();
 
     try {
-      const authtoken = sessionStorage.getItem("auth-token");
-      const email = sessionStorage.getItem("email");
+      const authtoken = sessionStorage.getItem("bearer-token");
+      const userDetailsString = sessionStorage.getItem("user-details");
 
-      if (!authtoken || !email) {
+      if (!authtoken || !userDetailsString) {
         navigate("/app/login");
         return;
       }
 
-      const payload = { ...updatedDetails };
+      const userDetails = JSON.parse(userDetailsString);
+      const [firstName, lastName] = updatedDetails.name.split(" ");
+
+      const payload = {
+        firstName: firstName || userDetails.firstName,
+        lastName: lastName || userDetails.lastName,
+        email: userDetails.email,
+      };
+
       const response = await fetch(`${urlConfig.backendUrl}/api/auth/update`, {
         method: "PUT",
         headers: {
@@ -74,9 +82,11 @@ const Profile = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
         // Update the user details in session storage
         setUserName(updatedDetails.name);
-        sessionStorage.setItem("name", updatedDetails.name);
+        sessionStorage.setItem("bearer-token", data.token);
+        sessionStorage.setItem("user-details", JSON.stringify(data.user));
         setUserDetails(updatedDetails);
         setEditMode(false);
         // Display success message to the user

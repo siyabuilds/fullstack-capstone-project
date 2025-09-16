@@ -25,7 +25,7 @@ const LoginPage = () => {
     setIncorrectPassword(false);
 
     try {
-      const response = await fetch(`${urlConfig.backendUrl}/auth/login`, {
+      const response = await fetch(`${urlConfig.backendUrl}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
